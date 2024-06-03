@@ -2,6 +2,13 @@
 
 # Packages
 
+- python ==
+- sklearn ==
+- numpy ==
+- tensorflow ==
+- torch ==
+- pandas ==
+
 # Dataset Preparation
 Download MIMIC-III from Physionet (Check: https://physionet.org/content/mimiciii/1.4/) and put the ADMISSION table, LABEVENT table, and DIAGNOSES_ICD table under /data/mimic3/raw/
 
