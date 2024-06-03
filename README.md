@@ -1,4 +1,4 @@
-# MPLite
+# MPLite (Multi-Aspect Pretraining for Mining Clinical Health Records)
 
 # Packages
 
