@@ -2,6 +2,7 @@ import math
 
 import numpy as np
 
+
 def split_patients(patient_admission: dict, admission_codes: dict, code_map: dict, seed=6669) -> (np.ndarray, np.ndarray, np.ndarray):
     print('splitting train, valid, and test pids')
     np.random.seed(seed)
@@ -36,6 +37,40 @@ def split_patients(patient_admission: dict, admission_codes: dict, code_map: dic
     return train_pids, valid_pids, test_pids
 
 
+# def code_matrix(pids: np.ndarray,
+#                   patient_admission: dict,
+#                   admission_codes_encoded: dict,
+#                   admission_pcodes_encoded: dict, 
+#                   admission_items_encoded: dict, 
+#                   max_admission_num: int,
+#                   code_num: int,
+#                   pcode_num: int,
+#                   item_num: int) -> tuple[np.ndarray, int]:
+#     print('building train/valid/test admission_code matrix ...')
+#     n = len(pids)
+#     x = np.zeros((n, max_admission_num, code_num), dtype=int)    # x = n*q*s, with q -> each visit, s -> codes in each visits
+#     p = np.zeros((n, max_admission_num, pcode_num), dtype=int)
+#     labs = np.zeros((n, max_admission_num, item_num), dtype=int)
+#     lens = []
+#     for i, pid in enumerate(pids):         ### Each patient
+#         #print('\r\t%d / %d' % (i + 1, len(pids)), end='')
+#         admissions = patient_admission[pid]
+#         for k, admission in enumerate(admissions):         ### Each admission
+#             admission_id = admission['admission_id']
+#             code = admission_codes_encoded[admission_id]
+#             pcode = admission_pcodes_encoded[admission_id]
+#             lab = admission_items_encoded[admission_id]
+#             pcode_index = [y-1 for y in pcode]
+#             lab_index = [z-1 for z in lab]
+#             x[i][k][:len(code)] = code
+#             p[i][k][pcode_index] = 1
+#             labs[i][k][lab_index] = 1
+#             if k!= 0: lens.append(k)
+#     #print('\r\t%d / %d' % (len(pids), len(pids)))
+#     total_possible_examples = sum([len(patient_admission[p])-1 for p in pids])
+#     return x, p, labs, np.array(lens), total_possible_examples
+
+
 def code_matrix(pids: np.ndarray,
                   patient_admission: dict,
                   admission_codes_encoded: dict, 
@@ -63,6 +98,7 @@ def code_matrix(pids: np.ndarray,
     total_possible_examples = sum([len(patient_admission[p])-1 for p in pids])
     return x, labs, np.array(lens), total_possible_examples
 
+
 def build_code_xy(codes_matrix: np.ndarray,
                   labs_matrix: np.ndarray,
                   n: int,
@@ -84,6 +120,33 @@ def build_code_xy(codes_matrix: np.ndarray,
             k+=1
         #print('\r\t%d / %d' % (len(pids), len(pids)))
     return x, y, labs
+
+
+# def build_code_xy(codes_matrix: np.ndarray,
+#                   procs_matrix: np.ndarray, 
+#                   labs_matrix: np.ndarray,
+#                   n: int,
+#                   max_admission_num: int,
+#                   code_num: int,
+#                   pcode_num: int,
+#                   item_num: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+#     print('building train/valid/test feature and labels ...')
+#     x = np.zeros((n, max_admission_num, code_num), dtype=int)    # x = n*q*s, with q -> each visit, s -> codes in each visits
+#     y = np.zeros((n, code_num), dtype=int)
+#     p = np.zeros((n, max_admission_num, pcode_num), dtype=int)
+#     labs = np.zeros((n, item_num), dtype=int)
+#     k = 0
+#     for i in range(len(codes_matrix)):
+#         for j in range(1, len(codes_matrix[i])):
+#             if np.all(codes_matrix[i][j]==0): break
+#             x[k][:j] = codes_matrix[i][:j]
+#             y_code_index = [t-1 for t in codes_matrix[i][j] if t!=0]
+#             y[k][y_code_index] = 1
+#             p[k][:j] = procs_matrix[i][:j]
+#             labs[k] = labs_matrix[i][j]
+#             k+=1
+#         #print('\r\t%d / %d' % (len(pids), len(pids)))
+#     return x, y, p, labs
 
 
 def build_single_lab_xy(single_patient_admission: np.ndarray,
@@ -116,8 +179,8 @@ def build_single_lab_xy(single_patient_admission: np.ndarray,
             code_index = [j-1 for j in codes]
             x[i][item_index] = 1
             y[i][code_index] = 1
-            i+=1
-    #print(i)
+            i += 1
+    # print(i)
     return x, y
 
 
