@@ -2,12 +2,12 @@
 
 # Packages
 
-- python ==
-- sklearn ==
-- numpy ==
-- tensorflow ==
-- torch ==
-- pandas ==
+- python == 3.9.0
+- sklearn == 1.4.0
+- numpy == 1.26.2
+- tensorflow == 2.10
+- torch == 2.1.2
+- pandas == 1.5.3
 
 # Dataset Preparation
 Download MIMIC-III from Physionet (Check: https://physionet.org/content/mimiciii/1.4/) and put the ADMISSION table, LABEVENT table, and DIAGNOSES_ICD table under /data/mimic3/raw/
@@ -43,6 +43,6 @@ python Timeline.py
 
 d. GRU 
 ```bash
-python train GRU.py
+python train_GRU.py
 ```
-  
+
